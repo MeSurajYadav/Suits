@@ -1,0 +1,54 @@
+@model Server.Models.TaskSnapShot
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>TaskSnapShot</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeStamp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TimeStamp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PercentageOfWorkCompleted)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PercentageOfWorkCompleted)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AssignedTo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AssignedTo.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AssignedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AssignedBy.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Task)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Task.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
