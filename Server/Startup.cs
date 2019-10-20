@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Models.Contexts;
+using Microsoft.Extensions.Hosting;
 
 namespace Server
 {
@@ -77,7 +78,11 @@ namespace Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        //public void Configure(IApplicationBuilder app, IHostingEnvironment env) obsolete
+        //So we added IWbHostEnvironment instead, and found that env.IsDevelopment() is not present.
+        //Then got that this extension is needed
+        //using Microsoft.Extensions.Hosting; WOW
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

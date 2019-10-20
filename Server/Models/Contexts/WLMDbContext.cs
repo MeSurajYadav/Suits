@@ -29,7 +29,10 @@ namespace Server.Models.Contexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=AG624599;Database=Test2;Trusted_Connection=True");optionsBuilder.EnableSensitiveDataLogging();
+            // optionsBuilder.UseSqlServer(@"Server=AG624599;Database=Test2;Trusted_Connection=True");
+            optionsBuilder.UseSqlServer(@"Server=ShriKrishnaPC\SSDevInstance;Database=Tst;Trusted_Connection=True;");
+            optionsBuilder.EnableSensitiveDataLogging();
+            
             //base.OnConfiguring(optionsBuilder);
         }
 

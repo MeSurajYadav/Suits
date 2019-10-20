@@ -5,7 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+</Project>
+
+<!-- 
+   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0">
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -15,4 +28,90 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
     </ItemGroup>
 
-</Project>
+    dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+    dotnet tool install - -global dotnet-ef
+    dotnet add package Microsoft.EntityFrameworkCore.Design
+    dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+    dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Tools
+
+    You can see, your project wont automatically create DB.
+    You got to fire dotnet-ef database update, but that wont run showing below error:
+
+    "
+    C:\Users\mesur\Desktop\SwapnanliStudy\surajstudy\Suits\Server>dotnet-ef
+    A fatal error occurred. The required library hostfxr.dll could not be found.
+    If this is a self-contained application, 
+      that library should exist in 
+      [C:\Users\mesur\.dotnet\tools\.store\dotnet-ef\3.0.0\dotnet-ef\3.0.0\tools\netcoreapp3.0\any\].
+    If this is a framework-dependent application, 
+      install the runtime in the global location 
+      [C:\Program Files\dotnet] 
+      or 
+      use the DOTNET_ROOT environment variable to specify the runtime location 
+      or 
+      register the runtime location in [HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x64\InstallLocation].
+    "
+    So, what i did is set DOTNET_ROOT to C:\ProgFilesBins\dotnet
+    
+    Now, .dotnet folder have dotnet-ef.exe
+    and C:\ProgFilesBins\dotnet have dontnetcore files.
+
+    Closed VSCode and reopened so that changes in EnvPaths will be reflected.
+
+    Now, project is already running and if I fire task page, I still got this error:
+
+    "An unhandled exception occurred while processing the request.
+    SqlException: Cannot open database "Test23" requested by the login. The login failed.
+    Login failed for user 'MicrosoftAccount\mesurajyadav@outlook.com'.
+    Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, object providerInfo, string newPassword, SecureString newSecurePassword, bool redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, bool applyTransientFaultHandling, string accessToken, DbConnectionPool pool, SqlAuthenticationProviderManager sqlAuthProviderManager)
+    "
+
+    REASON: I can think of is, "EF is too many things, but it wont create database without manual command"
+    Now, I am opening new CMD and fire "dotnet-ef database update"
+    
+    OOPS another ERROR:
+    "
+    C:\Users\mesur\Desktop\SwapnanliStudy\surajstudy\Suits\Server>dotnet-ef database update
+    Build failed.
+    "
+    This is because, we need to stop already running CMD, may be project build is necessary before running
+    EF commands, and project might not build again while its running already.
+
+    Now, we have third error:
+
+    "C:\Users\mesur\Desktop\SwapnanliStudy\surajstudy\Suits\Server>dotnet-ef database update
+    Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='60']
+    CREATE DATABASE [Test23];
+    Failed executing DbCommand (118ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+    CREATE DATABASE [Test23];
+    Microsoft.Data.SqlClient.SqlException (0x80131904): CREATE DATABASE permission denied in database 'master'.
+      at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+      at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+      at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+      at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+      at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+      at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+      at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+      at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+      at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+      at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+      at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDatabaseCreator.Create()
+      at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+      at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String contextType)
+      at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String contextType)
+      at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+      at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+    ClientConnectionId:1c3a4d56-9e64-42c9-8f9b-9d1f45c0e2f5
+    Error Number:262,State:1,Class:14
+    CREATE DATABASE permission denied in database 'master'.
+    "
+
+    This is simple becase mesur or mesurajyadav@outlook.com, i think bother are one.
+    DO NOT HAVE create database persmiisoin.
+
+    giving user and pwd of sa and rebuilding and firing update wokred.
+
+    Now that its working, m gonna change the SQL Server auth to Windows Auth so that I wont be saving password
+    here in source file, before commit.
+    Of course I got to give my windows account db creation
+ -->
